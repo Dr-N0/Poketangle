@@ -42,7 +42,7 @@ Visit the following routes in your browser or use a tool like `curl` to test the
 To access the protected "/guess" route, include the secret token in the `Authorization` header:
 
 ```bash
-curl -H "Authorization: Bearer your-secret-token" http://localhost:8080/guess
+curl -X POST  -H "Content-Type: application/json"  -H "Authorization: Bearer your-secret-token"  -d '{"pokemon":"Pikachu","question":"is it a monotype?"}'  http://localhost:8080/guess
 ```
 
 Replace "your-secret-token" with your actual secret token.

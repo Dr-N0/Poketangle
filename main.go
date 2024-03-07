@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -11,6 +12,27 @@ import (
 type RequestExpect struct {
 	Pokemon  string `json:"pokemon"`
 	Question string `json:"question"`
+}
+
+type PokemonData map[string][]interface{}
+
+func loadPokemonData() (PokemonData, error) {
+	// Read the JSON file
+	jsonData, err := os.ReadFile("pokedex.json")
+	if err != nil {
+		return nil, err
+	}
+
+	// Define a variable of type PokemonData to hold the parsed data
+	var pokemonData PokemonData
+
+	// Parse the JSON data into the pokemonData variable
+	err = json.Unmarshal(jsonData, &pokemonData)
+	if err != nil {
+		return nil, err
+	}
+
+	return pokemonData, nil
 }
 
 func main() {
@@ -41,6 +63,12 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Handler for the protected "/guess" route
 func guessHandler(w http.ResponseWriter, r *http.Request) {
+
+	pokemonData, pokemonError := loadPokemonData()
+	if pokemonError != nil {
+		log.Fatalf("Failed to load Pokemon data: %v", pokemonError)
+	}
+
 	// Decode the request body into a RequestExpect struct
 	var requestBody RequestExpect
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
@@ -109,14 +137,6 @@ func typeCheck(details []interface{}, type1, type2 string) string {
 	return fmt.Sprintf("not a %s or %s type", type1, type2)
 }
 
-// Define a map to store Pokemon details based on their names
-var pokemonData = map[string][]interface{}{
-	"Bulbasaur": {1, "Grass", "Poison", 0.7, 6.9},
-	"Ivysaur":   {1, "Grass", "Poison", 1, 13},
-	// Add more Pokemon details...
-}
-
-// Middleware for basic authentication
 func authMiddleware(next http.HandlerFunc, token string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Check the Authorization header for the token
@@ -127,6 +147,6 @@ func authMiddleware(next http.HandlerFunc, token string) http.HandlerFunc {
 		}
 
 		// Call the next handler if authentication is successful
-		next.ServeHTTP(w, r)
+		next(w, r)
 	}
 }
