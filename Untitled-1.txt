@@ -1,0 +1,25 @@
+"""
+THERE ARE {number of pokemon - correct guesses} POKEMON, {pokemon} guessed correctly for correct guess in guesses
+QUESTIONS ASKED SO FAR:
+{question.question, question.answer for question in questions}
+ask a new question (columns)
+    gen questions
+        did it debut [before/after/in] gen [1,2,3,4,5,6,7,8,9]
+    type questions
+        is it a monotype?
+        is it a combination [physical, special][physical, special] type
+        does it have a [special, physical] type
+        does it share a type with [pokemon]
+        does it have a type that [resists, is weak to, is neutral to, is immune to, is super effective against, is not very effective against, is neutral against, is ineffective against] [type]
+        is it [resistant, resistant 2x, resistant 4x, immune, weak to, weak to 2x, weak to 4x] [type]
+    evolution questions
+        is it a [base, 1st, 2nd] form?
+        does it share an evolutionary line with [pokemon]
+        does it evolve (does not include megas)?
+    misc categories:
+        is it a [legendary, mythical, baby, starter]?
+guess:
+is it [pokemon]
+
+
+if a pokemon is guessed correctly, decrement remaining pokemon and recalculate answers
